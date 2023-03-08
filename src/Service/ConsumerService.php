@@ -19,10 +19,11 @@ class ConsumerService
         ]);
     }
 
-    public function addQueue(string $name, string $url, $handler): void
+    public function addQueue(string $name, string $url, int $maxMessages, $handler): void
     {
         $this->queues[$name] = [
             'url' => $url,
+            'max_messages' => $maxMessages,
             'handler' => $handler,
         ];
     }

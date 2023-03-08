@@ -22,6 +22,7 @@ class EcosystemBusConsumerBundle extends AbstractBundle
             $containerConfigurator->services()->get(ConsumerService::class)->call('addQueue', [
                 $name,
                 $queueConfig['url'],
+                intval($queueConfig['max_messages']),
                 new Reference($queueConfig['handler'])
             ]);
         }
