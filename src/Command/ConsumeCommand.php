@@ -29,19 +29,20 @@ class ConsumeCommand extends Command
     {
         $pid = getmypid();
         $queue = strval($input->getArgument('queue'));
-        $output->writeln(sprintf('[%d] Starting to consume queue: %s', $pid, $queue));
+        $logger = $this->logger;
+        $logger->debug(sprintf('[%d] Starting to consume queue: %s', $pid, $queue));
 
         $start = time();
-        pcntl_signal(SIGTERM, function() use ($output, $pid, &$start) {
+        pcntl_signal(SIGTERM, function () use ($logger, $pid, &$start) {
             $start = 0;
-            $output->writeln(sprintf('[%d] SIGTERM received.', $pid));
+            $logger->logger->debug(sprintf('[%d] SIGTERM received.', $pid));
         });
 
         do {
             $this->consumerService->receive($queue);
         } while (time() - $start < 600);
 
-        $output->writeln(sprintf('[%d] Finished to consume queue: %s', $pid, $queue));
+        $logger->debug(sprintf('[%d] Finished to consume queue: %s', $pid, $queue));
 
         return Command::SUCCESS;
     }
