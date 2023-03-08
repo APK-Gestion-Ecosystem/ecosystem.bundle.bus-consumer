@@ -2,7 +2,7 @@
 
 namespace Ecosystem\BusConsumerBundle\Command;
 
-use Ecosystem\BusBundle\Service\ConsumerService;
+use Ecosystem\BusConsumerBundle\Service\ConsumerService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
