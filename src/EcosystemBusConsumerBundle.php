@@ -2,7 +2,7 @@
 
 namespace Ecosystem\BusConsumerBundle;
 
-use Ecosystem\BusBundle\Service\ConsumerService;
+use Ecosystem\BusConsumerBundle\Service\ConsumerService;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
