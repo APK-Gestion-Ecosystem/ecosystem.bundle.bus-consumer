@@ -6,6 +6,7 @@ use Ecosystem\BusConsumerBundle\Service\ConsumerService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -19,11 +20,19 @@ class ConsumeCommand extends Command
     #[Required]
     public LoggerInterface $logger;
 
+    protected function configure(): void
+    {
+        $this->addArgument('queue', InputArgument::REQUIRED, 'Queue name to consume');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('Test');
+        $queue = strval($input->getArgument('queue'));
+        $start = time();
 
-        $this->consumerService->receive('default');
+        do {
+            $this->consumerService->receive($queue);
+        } while (time() - $start < 600);
 
         return Command::SUCCESS;
     }
