@@ -27,22 +27,21 @@ class ConsumeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $pid = getmypid();
         $queue = strval($input->getArgument('queue'));
         $logger = $this->logger;
-        $logger->info(sprintf('[%d] Starting to consume queue: %s', $pid, $queue));
+        $logger->info(sprintf('Starting to consume queue: %s', $queue));
 
         $start = time();
-        pcntl_signal(SIGTERM, function () use ($logger, $pid, &$start) {
+        pcntl_signal(SIGTERM, function () use ($logger, &$start) {
             $start = 0;
-            $logger->logger->info(sprintf('[%d] SIGTERM received.', $pid));
+            $logger->logger->info('SIGTERM received.');
         });
 
         do {
             $this->consumerService->receive($queue);
         } while (time() - $start < 600);
 
-        $logger->info(sprintf('[%d] Finished to consume queue: %s', $pid, $queue));
+        $logger->info(sprintf('Finished to consume queue: %s', $queue));
 
         return Command::SUCCESS;
     }
