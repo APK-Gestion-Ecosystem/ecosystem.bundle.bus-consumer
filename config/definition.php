@@ -11,6 +11,7 @@ return static function (DefinitionConfigurator $definition) {
                         ->scalarNode('url')->end()
                         ->scalarNode('handler')->end()
                         ->scalarNode('max_messages')->defaultValue(1)->end()
+                        ->scalarNode('wait_time')->defaultValue(20)->end()
                     ->end()
                 ->end()
             ->end() // queues

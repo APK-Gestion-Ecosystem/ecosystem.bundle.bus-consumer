@@ -12,18 +12,24 @@ class ConsumerService
 
     public function __construct()
     {
-        $this->client = new SqsClient([
+        $config = [
             'region' => getenv('AWS_REGION'),
             'version' => '2012-11-05',
-            'credentials' => false
-        ]);
+        ];
+
+        if (getenv('LOCALSTACK')) {
+            $config['credentials'] = false;
+        }
+
+        $this->client = new SqsClient($config);
     }
 
-    public function addQueue(string $name, string $url, int $maxMessages, $handler): void
+    public function addQueue(string $name, string $url, int $maxMessages, int $waitTime, $handler): void
     {
         $this->queues[$name] = [
             'url' => $url,
             'max_messages' => $maxMessages,
+            'wait_time' => $waitTime,
             'handler' => $handler,
         ];
     }
@@ -32,7 +38,7 @@ class ConsumerService
     {
         try {
             $result = $this->client->receiveMessage([
-                'WaitTimeSeconds' => 20,
+                'WaitTimeSeconds' => intval($this->queues[$queue]['wait_time']),
                 'MaxNumberOfMessages' => intval($this->queues[$queue]['max_messages']),
                 'MessageAttributeNames' => ['All'],
                 'QueueUrl' => $this->queues[$queue]['url'],

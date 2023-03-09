@@ -23,6 +23,7 @@ class EcosystemBusConsumerBundle extends AbstractBundle
                 $name,
                 $queueConfig['url'],
                 intval($queueConfig['max_messages']),
+                intval($queueConfig['wait_time']),
                 new Reference($queueConfig['handler'])
             ]);
         }
