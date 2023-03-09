@@ -4,9 +4,14 @@ namespace Ecosystem\BusConsumerBundle\Service;
 
 use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
+use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class ConsumerService
 {
+    #[Required]
+    public LoggerInterface $logger;
+
     private SqsClient $client;
     private array $queues;
 
@@ -45,16 +50,18 @@ class ConsumerService
             ]);
 
             if (isset($result['Messages'])) {
-                $notification = json_decode($result['Messages'][0]['Body'], true);
-                $message = json_decode($notification['Message'], true);
-                $this->queues[$queue]['handler']($message);
-                $this->client->deleteMessage([
-                    'QueueUrl' => $this->queues[$queue]['url'],
-                    'ReceiptHandle' => $result['Messages'][0]['ReceiptHandle'],
-                ]);
+                foreach ($result['Messages'] as $message) {
+                    $notification = json_decode($message['Body'], true);
+                    $payload = json_decode($notification['Message'], true);
+                    $this->queues[$queue]['handler']($payload);
+                    $this->client->deleteMessage([
+                        'QueueUrl' => $this->queues[$queue]['url'],
+                        'ReceiptHandle' => $message['ReceiptHandle'],
+                    ]);
+                }
             }
-        } catch (AwsException $e) {
-            error_log($e->getMessage());
+        } catch (\Exception $exception) {
+            $this->logger->critical(sprintf('Unable to process messages, exception: "%s"', $exception->getMessage()));
         }
     }
 }
