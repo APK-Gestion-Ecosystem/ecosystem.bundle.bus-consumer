@@ -10,5 +10,8 @@ services:
     Ecosystem\BusConsumerBundle\Command\:
         resource: '../src/Command'
 
+    Ecosystem\BusConsumerBundle\Handler\:
+        resource: '../src/Handler'
+
     Ecosystem\BusConsumerBundle\Service\:
         resource: '../src/Service'
