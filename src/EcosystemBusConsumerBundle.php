@@ -2,6 +2,7 @@
 
 namespace Ecosystem\BusConsumerBundle;
 
+use Ecosystem\BusConsumerBundle\Handler\HandlerInterface;
 use Ecosystem\BusConsumerBundle\Service\ConsumerService;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,6 +28,8 @@ class EcosystemBusConsumerBundle extends AbstractBundle
                 new Reference($queueConfig['handler'])
             ]);
         }
+
+        $containerBuilder->registerForAutoconfiguration(HandlerInterface::class)->addTag('ecosystem.bus.handler');
     }
 
     public function configure(DefinitionConfigurator $definition): void

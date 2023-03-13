@@ -3,10 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    _instanceof:
-        Ecosystem\BusConsumerBundle\Handler\HandlerInterface:
-            tags: ['ecosystem.bus.handler']
-
     Ecosystem\BusConsumerBundle\Command\:
         resource: '../src/Command'
 
