@@ -3,7 +3,6 @@
 namespace Ecosystem\BusConsumerBundle\Service;
 
 use Aws\Sqs\SqsClient;
-use Aws\Exception\AwsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
