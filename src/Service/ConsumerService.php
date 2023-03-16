@@ -51,8 +51,14 @@ class ConsumerService
             if (isset($result['Messages'])) {
                 foreach ($result['Messages'] as $message) {
                     $notification = json_decode($message['Body'], true);
+                    $metadata = [
+                        'type' => $notification['Type'],
+                        'message_id' => $notification['MessageId'],
+                        'topic_arn' => $notification['TopicArn'],
+
+                    ];
                     $payload = json_decode($notification['Message'], true);
-                    $this->queues[$queue]['handler']($payload);
+                    $this->queues[$queue]['handler']($payload, $metadata);
                     $this->client->deleteMessage([
                         'QueueUrl' => $this->queues[$queue]['url'],
                         'ReceiptHandle' => $message['ReceiptHandle'],

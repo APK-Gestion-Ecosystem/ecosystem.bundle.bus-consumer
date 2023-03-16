@@ -17,7 +17,8 @@ class BusHandler
     }
 
     /** @param array<mixed> $message */
-    public function __invoke(array $message): void
+    /** @param array<mixed> $metadata */
+    public function __invoke(array $message, array $metadata): void
     {
         foreach ($this->handlers as $handler) {
             if ($handler->supports($message['namespace'], $message['event'])) {
@@ -28,7 +29,7 @@ class BusHandler
                     $handler::class
                 ));
 
-                $handler($message);
+                $handler($message, $metadata);
             }
         }
     }
