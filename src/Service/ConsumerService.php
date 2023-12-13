@@ -18,10 +18,11 @@ class ConsumerService
     {
         $config = [
             'region' => getenv('AWS_REGION'),
-            'version' => '2012-11-05',
+            'version' => 'latest',
         ];
 
         if (getenv('LOCALSTACK')) {
+            $config['endpoint'] = 'http://localstack:4566';
             $config['credentials'] = false;
         }
 
