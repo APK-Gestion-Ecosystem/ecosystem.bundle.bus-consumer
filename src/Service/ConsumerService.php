@@ -58,6 +58,7 @@ class ConsumerService
                 'WaitTimeSeconds' => intval($this->queues[$queue]['wait_time']),
                 'MaxNumberOfMessages' => intval($this->queues[$queue]['max_messages']),
                 'MessageAttributeNames' => ['All'],
+                'AttributeNames' => ['SentTimestamp'],
                 'QueueUrl' => $this->queues[$queue]['url'],
             ]);
 
@@ -70,11 +71,15 @@ class ConsumerService
                             'message_id' => $notification['MessageId'],
                             'type' => $notification['Type'],
                             'topic_arn' => $notification['TopicArn'],
+                            'timestamp' => $message['Attributes']['SentTimestamp'],
                         ];
                         $payload = json_decode($notification['Message'], true);
                     } else {
                         $payload = $notification;
-                        $metadata = ['message_id' => $message['MessageId']];
+                        $metadata = [
+                            'message_id' => $message['MessageId'],
+                            'timestamp' => $message['Attributes']['SentTimestamp']
+                        ];
                     }
 
                     $this->queues[$queue]['handler']($payload, $metadata);
