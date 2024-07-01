@@ -71,14 +71,14 @@ class ConsumerService
                             'message_id' => $notification['MessageId'],
                             'type' => $notification['Type'],
                             'topic_arn' => $notification['TopicArn'],
-                            'timestamp' => $message['Attributes']['SentTimestamp'],
+                            'timestamp' => intval($message['Attributes']['SentTimestamp']),
                         ];
                         $payload = json_decode($notification['Message'], true);
                     } else {
                         $payload = $notification;
                         $metadata = [
                             'message_id' => $message['MessageId'],
-                            'timestamp' => $message['Attributes']['SentTimestamp']
+                            'timestamp' => intval($message['Attributes']['SentTimestamp']),
                         ];
                     }
 
