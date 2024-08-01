@@ -64,6 +64,7 @@ class ConsumerService
 
             if (isset($result['Messages'])) {
                 foreach ($result['Messages'] as $message) {
+                    $payload = [];
                     $notification = json_decode($message['Body'], true);
 
                     if (isset($notification['TopicArn'])) {
@@ -91,7 +92,8 @@ class ConsumerService
             }
         } catch (\Exception $exception) {
             $this->logger->critical(
-                sprintf('Unable to process messages, %s: "%s"', $exception::class, $exception->getMessage())
+                sprintf('Unable to process messages, %s: "%s"', $exception::class, $exception->getMessage()),
+                ['message_payload' => $payload]
             );
             if (strpos($exception::class, 'Doctrine') !== false) {
                 throw new \RuntimeException('Doctrine exception detected. Ending process.');
