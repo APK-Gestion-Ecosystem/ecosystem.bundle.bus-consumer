@@ -92,7 +92,7 @@ class ConsumerService
             }
         } catch (\Exception $exception) {
             $this->logger->critical(
-                sprintf('Unable to process messages, %s: "%s"', $exception::class, $exception->getMessage()),
+                sprintf('Unable to process messages - %s: "%s"', $exception::class, $exception->getMessage()),
                 ['message_payload' => $payload]
             );
             if (strpos($exception::class, 'Doctrine') !== false) {
