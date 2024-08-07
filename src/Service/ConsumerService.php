@@ -39,7 +39,7 @@ class ConsumerService
         ];
     }
 
-    public function send(string $queue, mixed $payload): void
+    public function send(string $queue, mixed $payload, int $delay = 0): void
     {
         if (!isset($this->queues[$queue])) {
             throw new \RuntimeException(sprintf('Queue "%s" not defined.', $queue));
@@ -47,7 +47,8 @@ class ConsumerService
 
         $this->client->sendMessage([
             'MessageBody' => json_encode($payload),
-            'QueueUrl' => $this->queues[$queue]['url']
+            'QueueUrl' => $this->queues[$queue]['url'],
+            'DelaySeconds' => $delay
         ]);
     }
 
