@@ -92,7 +92,10 @@ class ConsumerService
                 }
             }
         } catch (\Exception $exception) {
-            $this->logger->critical(sprintf('Unable to process messages - %s: "%s"', $exception::class, $exception->getMessage()));
+            $this->logger->critical(
+                sprintf('Unable to process messages - %s: "%s"', $exception::class, $exception->getMessage()),
+                ['message_payload' => json_encode($payload ?? null)]
+            );
             if (strpos($exception::class, 'Doctrine') !== false) {
                 throw new \RuntimeException('Doctrine exception detected. Ending process.');
             }
