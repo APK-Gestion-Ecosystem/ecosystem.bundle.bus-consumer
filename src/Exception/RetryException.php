@@ -2,9 +2,9 @@
 
 namespace Ecosystem\BusConsumerBundle\Exception;
 
-class RetryException extends \DomainException
+class RetryException extends \RuntimeException
 {
-    public function __construct(string $message = '', protected int $timeout = 120, int $code = 0, \Throwable|null $previous = null)
+    public function __construct(string $message = '', protected readonly int $timeout = 120, int $code = 0, \Throwable|null $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
