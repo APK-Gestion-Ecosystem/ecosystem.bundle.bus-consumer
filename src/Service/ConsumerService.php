@@ -3,6 +3,7 @@
 namespace Ecosystem\BusConsumerBundle\Service;
 
 use Aws\Sqs\SqsClient;
+use Ecosystem\BusConsumerBundle\Exception\RetryException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -91,6 +92,13 @@ class ConsumerService
                     ]);
                 }
             }
+        } catch (RetryException $exception) {
+            $this->logger->debug(sprintf('Retry messages later - %s: "%s"', $exception::class, $exception->getMessage()));
+            $this->client->changeMessageVisibility([
+                'QueueUrl' => $this->queues[$queue]['url'],
+                'ReceiptHandle' => $message['ReceiptHandle'],
+                'VisibilityTimeout' => $exception->getTimeout(),
+            ]);
         } catch (\Exception $exception) {
             $this->logger->critical(
                 sprintf('Unable to process messages - %s: "%s"', $exception::class, $exception->getMessage()),
